@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style type="text/css">
+    	* { margin: 0; padding: 0 }
+		#page-item-box {}
+		#page-item-box ul {}
+		#page-item-box ul li {
+			display: block;
+			overflow: hidden;
+			clear: both;
+		}
+		#page-item-box ul li > div {
+			float: left;
+		}
+		#page-item-box .res-box span {
+			display: block;
+		}
+		#page-item-box .test-fail {
+			border : 5px solid red;
+		}
+		#page-item-box .test-fail .res-box span.msg {
+			font-size: 30px;
+			font-weight: bold;
+			color: red;
+		}
+		#page-item-box .test-fail .res-box span.title {
+			font-size: 20px;
+			font-weight: bold;
+		}
+    </style>
+  </head>
+  <body>
+  	<!--
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    -->
+    <header>
+    	<h1>SHOPPING PAGE MONITERING SYSTEM</h1>
+    	<div>
+			    		
+    	</div>
+    </header>
+    <section id="page-item-box">
+    	<ul>
+    		<li class="test-fail">
+    			<div>
+    				<img src="file:///D:/project/moni/screenShotTest/1/1.jpg">
+    			</div>
+    			<div class="res-box">
+    				<span class="title">다이나믹 프라이스</span>
+    				<span class="msg">ERROR</span>
+    				<span class="">최종 확인 시간 : 3분전</span>
+    				<span>테스트 10개 중 2개 통과 / 20% 통과</span>
+    			</div>
+    		</li>
+    	</ul>
+    </section>
+  </body>
+</html>

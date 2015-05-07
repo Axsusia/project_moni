@@ -1,0 +1,94 @@
+[
+	{
+		"no" : "1",
+		"title" : "인터파크 메인",
+		"url" : "http://www.interpark.com",
+		"option" : "",
+		"thenList" : [
+			{
+				"no" : "1",
+				"type" : "1",
+				"seek" : "$( '.luckybag' ).find('div').size();",
+				"compare" : "2"
+			},
+			{
+				"no" : "2",
+				"type" : "1",
+				"seek" : "$( '.Dynamic' ).find('div').size();",
+				"compare" : "2"
+			},
+			{
+				"no" : "3",
+				"type" : "3",
+				"selector" : "",
+				"check" : "",
+				"screenShot" : "true",
+				"screenShot_selector" : ""
+			}
+		],
+		"view_width" : "1300",
+		"view_height" : ""
+	},
+	{
+		"no" : "2",
+		"title" : "다이나믹 프라이스",
+		"url" : "http://www.interpark.com/displaycorner/dynamicPrice.do?_method=prdList",
+		"option" : "",
+		"thenList" : [
+			{
+				"no" : "1",
+				"type" : "3",
+				"selecter" : "",
+				"check" : "",
+				"screenShot" : "true",
+				"screenShot_selector" : ""
+			}
+		],
+		"view_width" : "1300",
+		"view_height" : ""
+	},
+	{
+		"no" : "3",
+		"title" : "인터파크 로그인 스샷",
+		"url" : "http://www.interpark.com/member/login.do?_method=initial&GNBLogin=Y&wid1=wgnb&wid2=wel_login&wid3=login&bl_id=M91010&historyGoCnt=-1",
+		"option" : "",
+		"thenList" : [
+			{
+				"no" : "1",
+				"type" : "2",
+				"iframe_selecter" : "iframe[name='subIframe']",
+				"selector" : "form[name='MemberLogInForm']",
+				"form_value" : {
+					"sc.memId" : "",
+					"sc.pwd" : ""
+				},
+				"screenShot" : "false"
+			},
+			{
+				"no" : "2",
+				"type" : "1",
+				"seek" : "$( '.luckybag' ).find('div').size();",
+				"compare" : "2"
+			}
+		],
+		"view_width" : "1300",
+		"view_height" : ""
+	},
+	{
+		"no" : "4",
+		"title" : "럭키백",
+		"url" : "http://www.interpark.com/displaycorner/LuckyBag.do?_method=main",
+		"option" : "",
+		"thenList" : [
+			{
+				"type" : "3",
+				"selecter" : "",
+				"check" : "",
+				"screenShot" : "true",
+				"screenShot_selector" : ""
+			}
+		],
+		"view_width" : "1300",
+		"view_height" : ""
+	}
+]

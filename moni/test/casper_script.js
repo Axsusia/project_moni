@@ -13,11 +13,11 @@ var line = system.stdin.readLine();
 var pages = JSON.parse( line );
 
 var TEST_TYPE = {
-	move : 0,
-	iframe_move : 1,
-	screen_shot : 2,
-	check : 3,
-	form_send : 4
+	move : 1,
+	iframe_move : 2,
+	screen_shot : 3,
+	check : 4,
+	form_send : 5
 }
 
 casper.on("load.started", function() {
@@ -44,33 +44,41 @@ casper.start().each( pages, function( self, page, i ) {
 
 	self.viewport( 1300, 768 );
 	self.thenOpen( page.url, function( response ) {
-		this.echo('>> ' +page.url + ' try load >> 로드 시젼!!');
+		this.echo('******************************************');
+		this.echo('>> ' +page.title + ' try load >> 로드 시젼!!');
+		this.echo('******************************************');
 		//console.log(JSON.stringify(response));
 
 		// 기본적으로 스샷 한방.
-		var fileLocate = 'screenShotTest/'+page.no+'/'+page.no+'.png';
-		this.captureSelector(fileLocate, "html");
+		if ( page.screen_shot == 'Y' ) {
+			var fileLocate = 'screenShotTest/'+page.no+'/'+page.no+'.png';
+			this.captureSelector(fileLocate, "html");
+		}
 
-		var thenList = page.thenList;
+		var test_list = page.test_list;
 		var testResultList = [];
 
-		for ( var j=0 ; j < thenList.length ; j++ ) {
-			var test = thenList[j];
-			if ( test.type == 1 ) {
-				try {
-					test_type_1( self, testResultList, test, page );
-				} catch(e) {}
-			} else if ( test.type == 2 ) {
-				try {
-					test_type_2( self, testResultList, test, page );
-				} catch(e) {}
+		for ( var j=0 ; j < test_list.length ; j++ ) {
+			try {
+				var test = test_list[j];
+				if ( test.type == TEST_TYPE.move )
+					test_move ( self, testResultList, test, page );
+				else if ( test.type == TEST_TYPE.iframe_move )
+					test_iframe_move ( self, testResultList, test, page );
+				else if ( test.type == TEST_TYPE.screen_shot )
+					test_screen_shot ( self, testResultList, test, page );
+				else if ( test.type == TEST_TYPE.check )
+					test_check ( self, testResultList, test, page );
+				else if ( test.type == TEST_TYPE.form_send )
+					test_form_send ( self, testResultList, test, page );
+			} catch(e) {
+				console.log(e);
 			}
 		}
 
 		testListFinish( casper, testResultList );
-
 	});
-	console.log( page.title + '    >> ' + i + '  <<<< end');
+	//console.log( page.title + '    >> ' + i + '  <<<< end');
 });
 
 /**
@@ -82,61 +90,68 @@ casper.run(function(self) {
 	this.exit();
 });
 
-/**
- * [check_type_1 description]
- * @param  {[type]} casper         [description]
- * @param  {[type]} testResultList [description]
- * @param  {[type]} test           [description]
- * @param  {[type]} page           [description]
- * @return {[type]}                [description]
- */
-function test_type_1 ( casper, testResultList, test, page ) {
+// ####################################
+// TEST FUNCTION
+// ####################################
+function test_move ( casper, testResultList, test, page ) {
 	casper.then(function(){
-		console.log(' >>>>  check_type_1 << start' + page.title);
-		//this.wait(1000);
-		console.log('test >> in test_type');
-		this.capture('screenShotTest/'+page.no+'/'+page.no+'_'+test.no+'.png');
-		var resutlVal = this.evaluate(function( test ) {
-			return eval( test.seek || '()' );
-		}, test);
-
-		this.echo( resutlVal );
-		this.echo( resutlVal == test.compare );
-
-		var thenResult = {
-			page_no : page.no,
-			test_no : test.no,
-			result : resutlVal == test.compare
+		if ( test.url ) {
+			casper.thenOpen( test.url, function() { 
+				// 성공
+			});
+		} else {
+				// 실패
 		}
-
-		console.log( JSON.stringify(thenResult) );
-		testResultList.push ( thenResult );
 	});
 }
 
-/**
- * [check_type_2 description]
- * @param  {[type]} casper         [description]
- * @param  {[type]} testResultList [description]
- * @param  {[type]} test           [description]
- * @param  {[type]} page           [description]
- * @return {[type]}                [description]
- */
-function test_type_2 ( casper, testResultList, test, page ) {
-	casper.then(function( ) {
-		casper.page.switchToChildFrame( 10 );
-		casper.fill( test.selector, test.form_value, true );
-		casper.wait( 2000 );
-	});
+function test_iframe_move ( casper, testResultList, test, page ) {
+	casper.then(function () {
+		if  ( test.iframe_name ) {
+			var iframeIndex = this.evaluate(function( iframeName ) {
+				try {
+					__name_index__ = '';
+					$('iframe').each(function( index ) {
+						var name = $(this).attr('name');
+						if ( name == iframeName )
+							__name_index__ = index;
+					});
+					return __name_index__;
+				} catch (e) {
+					return '';
+				}
+			}, test.iframe_name);
+			if ( iframeIndex > -1 ) {
+				casper.page.switchToChildFrame( iframeIndex );
+			}
+		} else {
 
-	casper.thenOpen('http://www.interpark.com', function(){
-		casper.echo('폼전송');
+		}
 	});
+}
 
-	casper.then(function( ) {
-		console.log('로그인 후 스샷');
-		casper.capture('screenShotTest/'+page.no+'/'+page.no+'__2.png');
+function test_screen_shot ( casper, testResultList, test, page ) {
+	casper.then(function() {
+		var fileLocate = 'screenShotTest/'+page.no+'/'+test.no+'.png';
+		this.captureSelector(fileLocate, "html");
 	});
+}
+
+function test_check ( casper, testResultList, test, page ) {
+	casper.then(function() {
+		var resutlVal = this.evaluate(function( test ) {
+			return eval( test.seek || '();' );
+		}, test);
+	});
+}
+
+function test_form_send ( casper, testResultList, test, page ) {
+	casper.then(function() {
+		var formFinder = "form[name="+ test.form_name +"]";
+		this.echo( formFinder );
+		casper.fill( formFinder, test.form_value, true );
+	});
+	casper.wait( 2000 );
 }
 
 // test.
@@ -146,11 +161,6 @@ function testListFinish ( casper, testResultList ) {
 		msg('save', JSON.stringify(testResultList));
 	});
 }
-
-function screenShot ( casper, path ) {
-
-}
-
 
 function msg ( ) {
 	//arguments.length
@@ -165,6 +175,9 @@ function msg ( ) {
 	}
 }
 
-function getIframeInfo () {
+// ####################################
+// UTILS
+// ####################################
+function findExistElement ( casper, type, name ) {
 
-}
+} 

@@ -40,9 +40,9 @@ function callCasper( pages ) {
 			var strData = String(data);
 			console.log('log mag >>>>');
 			console.log(strData);
-			if ( strData.indexOf(PREPIX_SET.word('save')) == 0 ) {
-				saveData( strData.replace( PREPIX_SET.word('save'), '' ) );
-			}
+			// if ( strData.indexOf(PREPIX_SET.word('save')) == 0 ) {
+			// 	saveData( strData.replace( PREPIX_SET.word('save'), '' ) );
+			// }
 		});
 
 		child.stderr.on("data", function (data) {

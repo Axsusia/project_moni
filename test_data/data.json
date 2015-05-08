@@ -3,27 +3,20 @@
 		"no" : "1",
 		"title" : "인터파크 메인",
 		"url" : "http://www.interpark.com",
+		"screen_shot" : "Y",
 		"option" : "",
-		"thenList" : [
+		"test_list" : [
 			{
 				"no" : "1",
-				"type" : "1",
+				"type" : "4",
 				"seek" : "$( '.luckybag' ).find('div').size();",
 				"compare" : "2"
 			},
 			{
 				"no" : "2",
-				"type" : "1",
+				"type" : "4",
 				"seek" : "$( '.Dynamic' ).find('div').size();",
 				"compare" : "2"
-			},
-			{
-				"no" : "3",
-				"type" : "3",
-				"selector" : "",
-				"check" : "",
-				"screenShot" : "true",
-				"screenShot_selector" : ""
 			}
 		],
 		"view_width" : "1300",
@@ -33,15 +26,14 @@
 		"no" : "2",
 		"title" : "다이나믹 프라이스",
 		"url" : "http://www.interpark.com/displaycorner/dynamicPrice.do?_method=prdList",
+		"screen_shot" : "Y",
 		"option" : "",
-		"thenList" : [
+		"test_list" : [
 			{
 				"no" : "1",
 				"type" : "3",
 				"selecter" : "",
-				"check" : "",
-				"screenShot" : "true",
-				"screenShot_selector" : ""
+				"check" : ""
 			}
 		],
 		"view_width" : "1300",
@@ -51,24 +43,33 @@
 		"no" : "3",
 		"title" : "인터파크 로그인 스샷",
 		"url" : "http://www.interpark.com/member/login.do?_method=initial&GNBLogin=Y&wid1=wgnb&wid2=wel_login&wid3=login&bl_id=M91010&historyGoCnt=-1",
+		"screen_shot" : "Y",
 		"option" : "",
-		"thenList" : [
+		"test_list" : [
 			{
 				"no" : "1",
 				"type" : "2",
-				"iframe_selecter" : "iframe[name='subIframe']",
-				"selector" : "form[name='MemberLogInForm']",
-				"form_value" : {
-					"sc.memId" : "",
-					"sc.pwd" : ""
-				},
-				"screenShot" : "false"
+				"iframe_name" : "subIframe"
 			},
 			{
 				"no" : "2",
+				"type" : "5",
+				"form_name" : "MemberLogInForm",
+				"form_value" : {
+					"sc.memId" : "",
+					"sc.pwd" : ""
+				}
+			},
+			{
+				"no" : "3",
 				"type" : "1",
-				"seek" : "$( '.luckybag' ).find('div').size();",
-				"compare" : "2"
+				"url" : "http://www.interpark.com"
+			},
+			{
+				"no" : "4",
+				"type" : "3",
+				"seek" : "$('.mailConnect').find('a img').attr('class');",
+				"compare" : "on"
 			}
 		],
 		"view_width" : "1300",
@@ -78,14 +79,14 @@
 		"no" : "4",
 		"title" : "럭키백",
 		"url" : "http://www.interpark.com/displaycorner/LuckyBag.do?_method=main",
+		"screen_shot" : "Y",
 		"option" : "",
-		"thenList" : [
+		"test_list" : [
 			{
-				"type" : "3",
-				"selecter" : "",
-				"check" : "",
-				"screenShot" : "true",
-				"screenShot_selector" : ""
+				"no" : "1",
+				"type" : "4",
+				"seek" : "$( '.luckybag' ).find('div').size();",
+				"compare" : "2"
 			}
 		],
 		"view_width" : "1300",

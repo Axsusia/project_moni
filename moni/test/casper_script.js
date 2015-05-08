@@ -5,17 +5,25 @@ var casper = require("casper").create({
 	// 	loadImages:  false,         
 	// 	loadPlugins: false          
 	// },
-	logLevel: "debug",             
+	//logLevel: "debug",             
 	verbose: true                   
 });
 
 var line = system.stdin.readLine();
 var pages = JSON.parse( line );
-var index = 0;
+
+var TEST_TYPE = {
+	move : 0,
+	iframe_move : 1,
+	screen_shot : 2,
+	check : 3,
+	form_send : 4
+}
 
 casper.on("load.started", function() {
 	start = new Date();
 });
+
 casper.on("load.finished", function() {
 	//console.log('로드 완료');
 	this.echo(this.requestUrl + " loaded in " + (new Date() - start) + "ms", "PARAMETER");
@@ -51,15 +59,11 @@ casper.start().each( pages, function( self, page, i ) {
 			if ( test.type == 1 ) {
 				try {
 					test_type_1( self, testResultList, test, page );
-				} catch(e) {
-				}
+				} catch(e) {}
 			} else if ( test.type == 2 ) {
 				try {
 					test_type_2( self, testResultList, test, page );
-				} catch(e) {
-					console.log("error!!");
-					console.log(e);
-				}
+				} catch(e) {}
 			}
 		}
 
@@ -120,12 +124,9 @@ function test_type_1 ( casper, testResultList, test, page ) {
  */
 function test_type_2 ( casper, testResultList, test, page ) {
 	casper.then(function( ) {
-		casper.page.switchToChildFrame( 0 );
-		console.log('test...');
-		casper.wait(3000, function(){
-			casper.fill( test.selector, test.form_value, true );
-		});
-		//casper.capture('screenShotTest/'+page.no+'/'+page.no+'__1.png');
+		casper.page.switchToChildFrame( 10 );
+		casper.fill( test.selector, test.form_value, true );
+		casper.wait( 2000 );
 	});
 
 	casper.thenOpen('http://www.interpark.com', function(){
@@ -162,4 +163,8 @@ function msg ( ) {
 		//console.log( arguments[0] + "||" + arguments[1] );
 		system.stdout.writeLine( "[" + arguments[0] + "]" + arguments[1]);
 	}
+}
+
+function getIframeInfo () {
+
 }

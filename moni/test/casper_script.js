@@ -1,3 +1,16 @@
+/* *********************************************************************
+	casperjs 에서는 모듈 형태로 js 파일을 부를 수 있는 기능이 없음으로,
+	주석을 단락 삼아 한 파일에 모든 펑션을 선언한다.
+	보통은 테스트당 js 하나를 만들어 주는게 정석인듯.
+
+	varsion : 0.1
+	made : seosiwon
+********************************************************************* */
+
+// ####################################
+// CASTERJS FUNCTION
+// ####################################
+
 var utils = require('utils');
 var system = require('system');
 var casper = require("casper").create({
@@ -93,6 +106,7 @@ casper.run(function(self) {
 // ####################################
 // TEST FUNCTION
 // ####################################
+
 function test_move ( casper, testResultList, test, page ) {
 	casper.then(function(){
 		if ( test.url ) {
@@ -100,7 +114,7 @@ function test_move ( casper, testResultList, test, page ) {
 				// 성공
 			});
 		} else {
-				// 실패
+			// 실패
 		}
 	});
 }
@@ -125,7 +139,7 @@ function test_iframe_move ( casper, testResultList, test, page ) {
 				casper.page.switchToChildFrame( iframeIndex );
 			}
 		} else {
-
+			//fail
 		}
 	});
 }
@@ -142,25 +156,49 @@ function test_check ( casper, testResultList, test, page ) {
 		var resutlVal = this.evaluate(function( test ) {
 			return eval( test.seek || '();' );
 		}, test);
+		console.log( page.title + "에 대한 " + test.no + "번째 테스트 >> [" + resutlVal + "]" );
 	});
 }
 
 function test_form_send ( casper, testResultList, test, page ) {
 	casper.then(function() {
-		var formFinder = "form[name="+ test.form_name +"]";
-		this.echo( formFinder );
-		casper.fill( formFinder, test.form_value, true );
+		var exist = this.evaluate(function( formName ) {
+			try {
+				__name_form__ = false;
+				var forms = document.forms;
+				for ( var i=0 ; i<forms.length ; i++ ) {
+					if ( forms[i].name == formName )
+						__name_form__ = true;
+					else 
+						__name_form__ = false;
+				}
+				return __name_form__;
+			} catch (e) {
+				return false;
+			}
+		}, test.form_name);
+		console.log('>>>>>> form_name >>>> ' + exist + ' <<<<<<<<<< exist');
+		if ( exist ) {
+			var formFinder = "form[name="+ test.form_name +"]";
+			this.echo( formFinder );
+			casper.fill( formFinder, test.form_value, true );
+			casper.wait( 2000 );
+		} else {
+			// fail
+		}
 	});
-	casper.wait( 2000 );
 }
 
-// test.
 function testListFinish ( casper, testResultList ) {
 	casper.then(function(){
-		console.log("finish");
+		//console.log("finish");
 		msg('save', JSON.stringify(testResultList));
 	});
 }
+
+// ####################################
+// MSAGE FUNCTION
+// ####################################
 
 function msg ( ) {
 	//arguments.length
@@ -176,8 +214,6 @@ function msg ( ) {
 }
 
 // ####################################
-// UTILS
+// UTILS FUNCTION
 // ####################################
-function findExistElement ( casper, type, name ) {
 
-} 

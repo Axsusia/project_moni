@@ -32,7 +32,6 @@ function callCasper( pages ) {
 
 		console.log('Spawned child pid: ' + child.pid);
 
-
 		child.stdin.setEncoding = 'utf-8';
 		child.stdin.write(JSON.stringify(sectionSetList[i]) + WRITE_END);
 		//child.stdout.pipe(process.stdout);

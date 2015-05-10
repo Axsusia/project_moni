@@ -67,7 +67,7 @@
 			},
 			{
 				"no" : "4",
-				"type" : "3",
+				"type" : "4",
 				"seek" : "$('.mailConnect').find('a img').attr('class');",
 				"compare" : "on"
 			}

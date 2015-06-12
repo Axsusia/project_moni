@@ -1,9 +1,9 @@
+require('../common/prototype.js');
 var nodeScript = require('./test/node_script');
 var fs = require('fs');
 
 function loadList ( callCasper ) {
 	var dataList ;
-
 	fs.readFile('../test_data/data.json', 'utf8', function (err, data) {
 		if (err) throw err;
 		dataList = JSON.parse(data);
@@ -14,6 +14,7 @@ function loadList ( callCasper ) {
 		callCasper(dataList);
 	});
 }
+
 console.log( 'start.js' );
 
 loadList( nodeScript.callCasper );

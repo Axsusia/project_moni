@@ -4,8 +4,48 @@
 	보통은 테스트당 js 하나를 만들어 주는게 정석인듯.
 
 	varsion : 0.1
-	made : seosiwon
+	auter : seosiwon
 ********************************************************************* */
+
+// ####################################
+// SETTING FUNCTION
+// ####################################
+
+/* DB 저장 객체 */
+function DB_Object ( pageNo, testNo, testTp, code, msg ) {
+	this.page_no = pageNo;
+	this.test_no = testNo;
+	this.test_tp = testTp;
+	this.code = code;
+	this.msg = msg;
+}
+DB_Object.prototype.setPageNo = function ( pageNo ) {
+	this.page_no = pageNo;
+}
+DB_Object.prototype.setTestNo = function ( testNo ) {
+	this.test_no = testNo;
+}
+DB_Object.prototype.setTestTp = function ( testTp ) {
+	this.test_tp = testTp;
+}
+DB_Object.prototype.setCode = function ( code ) {	
+	this.code = code;
+}
+DB_Object.prototype.setMsg = function ( msg ) {
+	this.msg = msg;
+}
+
+// ####################################
+// SETTING VAR
+// ####################################
+
+var TEST_TYPE = {
+	move : 1,
+	iframe_move : 2,
+	screen_shot : 3,
+	check : 4,
+	form_send : 5
+}
 
 // ####################################
 // CASTERJS FUNCTION
@@ -24,14 +64,6 @@ var casper = require("casper").create({
 
 var line = system.stdin.readLine();
 var pages = JSON.parse( line );
-
-var TEST_TYPE = {
-	move : 1,
-	iframe_move : 2,
-	screen_shot : 3,
-	check : 4,
-	form_send : 5
-}
 
 casper.on("load.started", function() {
 	start = new Date();
@@ -57,10 +89,11 @@ casper.start().each( pages, function( self, page, i ) {
 
 	self.viewport( 1300, 768 );
 	self.thenOpen( page.url, function( response ) {
-		this.echo('******************************************');
-		this.echo('>> ' +page.title + ' try load >> 로드 시젼!!');
-		this.echo('******************************************');
-		//console.log(JSON.stringify(response));
+		this.echo(
+				'******************************************\n'
+			+	'>> ' +page.title + ' try load >> 로드 시젼!!\n'
+			+	'******************************************'
+		);
 
 		// 기본적으로 스샷 한방.
 		if ( page.screen_shot == 'Y' ) {
@@ -88,10 +121,8 @@ casper.start().each( pages, function( self, page, i ) {
 				console.log(e);
 			}
 		}
-
-		testListFinish( casper, testResultList );
+		//testListFinish( casper, testResultList );
 	});
-	//console.log( page.title + '    >> ' + i + '  <<<< end');
 });
 
 /**
@@ -112,9 +143,13 @@ function test_move ( casper, testResultList, test, page ) {
 		if ( test.url ) {
 			casper.thenOpen( test.url, function() { 
 				// 성공
+				var dbObj = new DB_Object( page.no, test.no, test.type, '200', '페이지 이동 성공' );
+				testListFinish ( casper, dbObj );
 			});
 		} else {
 			// 실패
+			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '페이지 이동 실패' );
+			testListFinish ( casper, dbObj );
 		}
 	});
 }
@@ -137,9 +172,12 @@ function test_iframe_move ( casper, testResultList, test, page ) {
 			}, test.iframe_name);
 			if ( iframeIndex > -1 ) {
 				casper.page.switchToChildFrame( iframeIndex );
+				var dbObj = new DB_Object( page.no, test.no, test.type, '200', '아이프레임 이동 성공' );
+				testListFinish ( casper, dbObj );
 			}
 		} else {
-			//fail
+			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '해당 아이프레임 없음' );
+			testListFinish ( casper, dbObj );
 		}
 	});
 }
@@ -154,9 +192,16 @@ function test_screen_shot ( casper, testResultList, test, page ) {
 function test_check ( casper, testResultList, test, page ) {
 	casper.then(function() {
 		var resutlVal = this.evaluate(function( test ) {
-			return eval( test.seek || '();' );
+			return eval( test.seek || ';' );
 		}, test);
 		console.log( page.title + "에 대한 " + test.no + "번째 테스트 >> [" + resutlVal + "]" );
+		if ( resutlVal ) {
+			var dbObj = new DB_Object( page.no, test.no, test.type, '200', '테스트 성공' );
+			testListFinish ( casper, dbObj );
+		} else {
+			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '테스트 실패' );
+			testListFinish ( casper, dbObj );
+		}
 	});
 }
 
@@ -177,17 +222,30 @@ function test_form_send ( casper, testResultList, test, page ) {
 				return false;
 			}
 		}, test.form_name);
-		console.log('>>>>>> form_name >>>> ' + exist + ' <<<<<<<<<< exist');
+		//console.log('>>>>>> form_name >>>> ' + exist + ' <<<<<<<<<< exist');
 		if ( exist ) {
 			var formFinder = "form[name="+ test.form_name +"]";
 			this.echo( formFinder );
 			casper.fill( formFinder, test.form_value, true );
 			casper.wait( 2000 );
+			var dbObj = new DB_Object( page.no, test.no, test.type, '200', '폼전송 성공' );
+			testListFinish ( casper, dbObj );
 		} else {
 			// fail
+			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '폼전송 실패' );
+			testListFinish ( casper, dbObj );
 		}
 	});
 }
+
+// 추가예정
+function test_javascript ( casper,testResultList, test, page ) {
+	 casper.then(function() {
+
+	 });
+}
+
+
 
 function testListFinish ( casper, testResultList ) {
 	casper.then(function(){
@@ -205,15 +263,14 @@ function msg ( ) {
 	var argSize = arguments.length;
 	//console.log( argSize );
 	if ( argSize == 1 ) {
-		console.log( arguments[0] );
+		//console.log( arguments[0] );
 	} else if ( argSize > 1 ) {
-		console.log('[msg]---> save');
+		//console.log('[msg] ::: save'+"\n");
 		//console.log( arguments[0] + "||" + arguments[1] );
-		system.stdout.writeLine( "[" + arguments[0] + "]" + arguments[1]);
+		system.stdout.writeLine( "[" + arguments[0] + "]" + arguments[1] + "\n");
 	}
 }
 
 // ####################################
 // UTILS FUNCTION
 // ####################################
-

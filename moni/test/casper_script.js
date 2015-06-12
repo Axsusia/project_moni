@@ -47,6 +47,10 @@ var TEST_TYPE = {
 	form_send : 5
 }
 
+var SETTING = {
+	capturePath : ''
+}
+
 // ####################################
 // CASTERJS FUNCTION
 // ####################################
@@ -59,7 +63,7 @@ var casper = require("casper").create({
 	// 	loadPlugins: false          
 	// },
 	//logLevel: "debug",             
-	verbose: true                   
+	verbose: true
 });
 
 var line = system.stdin.readLine();
@@ -85,7 +89,6 @@ casper.on('step.complete', function () {
 });
 
 casper.start().each( pages, function( self, page, i ) {
-	console.log( page.title + '    >> ' + i);
 
 	self.viewport( 1300, 768 );
 	self.thenOpen( page.url, function( response ) {
@@ -121,7 +124,7 @@ casper.start().each( pages, function( self, page, i ) {
 				console.log(e);
 			}
 		}
-		//testListFinish( casper, testResultList );
+		//testFinish( casper, testResultList );
 	});
 });
 
@@ -144,12 +147,12 @@ function test_move ( casper, testResultList, test, page ) {
 			casper.thenOpen( test.url, function() { 
 				// 성공
 				var dbObj = new DB_Object( page.no, test.no, test.type, '200', '페이지 이동 성공' );
-				testListFinish ( casper, dbObj );
+				testFinish ( casper, dbObj );
 			});
 		} else {
 			// 실패
 			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '페이지 이동 실패' );
-			testListFinish ( casper, dbObj );
+			testFinish ( casper, dbObj );
 		}
 	});
 }
@@ -173,11 +176,11 @@ function test_iframe_move ( casper, testResultList, test, page ) {
 			if ( iframeIndex > -1 ) {
 				casper.page.switchToChildFrame( iframeIndex );
 				var dbObj = new DB_Object( page.no, test.no, test.type, '200', '아이프레임 이동 성공' );
-				testListFinish ( casper, dbObj );
+				testFinish ( casper, dbObj );
 			}
 		} else {
 			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '해당 아이프레임 없음' );
-			testListFinish ( casper, dbObj );
+			testFinish ( casper, dbObj );
 		}
 	});
 }
@@ -197,10 +200,10 @@ function test_check ( casper, testResultList, test, page ) {
 		console.log( page.title + "에 대한 " + test.no + "번째 테스트 >> [" + resutlVal + "]" );
 		if ( resutlVal ) {
 			var dbObj = new DB_Object( page.no, test.no, test.type, '200', '테스트 성공' );
-			testListFinish ( casper, dbObj );
+			testFinish ( casper, dbObj );
 		} else {
 			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '테스트 실패' );
-			testListFinish ( casper, dbObj );
+			testFinish ( casper, dbObj );
 		}
 	});
 }
@@ -229,11 +232,11 @@ function test_form_send ( casper, testResultList, test, page ) {
 			casper.fill( formFinder, test.form_value, true );
 			casper.wait( 2000 );
 			var dbObj = new DB_Object( page.no, test.no, test.type, '200', '폼전송 성공' );
-			testListFinish ( casper, dbObj );
+			testFinish ( casper, dbObj );
 		} else {
 			// fail
 			var dbObj = new DB_Object( page.no, test.no, test.type, '400', '폼전송 실패' );
-			testListFinish ( casper, dbObj );
+			testFinish ( casper, dbObj );
 		}
 	});
 }
@@ -245,12 +248,15 @@ function test_javascript ( casper,testResultList, test, page ) {
 	 });
 }
 
-
-
-function testListFinish ( casper, testResultList ) {
+function testFinish ( casper, testResultList ) {
 	casper.then(function(){
-		//console.log("finish");
 		msg('save', JSON.stringify(testResultList));
+	});
+}
+
+function testListFinish () {
+	casper.then(function(){
+		msg('save_last', JSON.stringify(testResultList));
 	});
 }
 

@@ -2,7 +2,7 @@ var sqlSet = {
 
 	insertLogTime : {
 		creater : '서시원',
-		sql : "insert test_time values ( ':log_time' );"
+		sql : "insert test_time values ( ':log_time', '00' );"
 	},
 
 	insertLogData : {
@@ -43,8 +43,10 @@ var sqlSet = {
 }
 
 function get ( name ) {
-	if ( sqlSet[ name ] )
+	if ( sqlSet[ name ] ) {
+		console.log( sqlSet[ name ] );
 		return sqlSet[ name ];
+	}
 	else
 		return false;
 }

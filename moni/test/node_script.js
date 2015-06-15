@@ -87,6 +87,7 @@ function callCasper( pages ) {
 		for ( var i=0 ; i<ary.length ; i++ ) {
 			var dbObj = ary[i];
 			dbObj.log_time = LOG_TIME;
+			//console.dir(dbObj);
 			DB.work({
 				action : 'insert',
 				sqlName : 'insertLogData',

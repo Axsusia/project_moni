@@ -48,7 +48,7 @@ var TEST_TYPE = {
 }
 
 var SETTING = {
-	capturePath : ''
+	capturePath : '../www/public/images/capture/'
 }
 
 // ####################################
@@ -100,7 +100,7 @@ casper.start().each( pages, function( self, page, i ) {
 
 		// 기본적으로 스샷 한방.
 		if ( page.screen_shot == 'Y' ) {
-			var fileLocate = 'screenShotTest/'+page.no+'/'+page.no+'.png';
+			var fileLocate = SETTING.capturePath+page.no+'/page.png';
 			this.captureSelector(fileLocate, "html");
 		}
 
@@ -187,7 +187,7 @@ function test_iframe_move ( casper, testResultList, test, page ) {
 
 function test_screen_shot ( casper, testResultList, test, page ) {
 	casper.then(function() {
-		var fileLocate = 'screenShotTest/'+page.no+'/'+test.no+'.png';
+		var fileLocate = SETTING.capturePath+page.no+'/'+test.no+'.png';
 		this.captureSelector(fileLocate, "html");
 	});
 }
@@ -198,7 +198,7 @@ function test_check ( casper, testResultList, test, page ) {
 			return eval( test.seek || ';' );
 		}, test);
 		console.log( page.title + "에 대한 " + test.no + "번째 테스트 >> [" + resutlVal + "]" );
-		if ( resutlVal ) {
+		if ( resutlVal == test.compare ) {
 			var dbObj = new DB_Object( page.no, test.no, test.type, '200', '테스트 성공' );
 			testFinish ( casper, dbObj );
 		} else {

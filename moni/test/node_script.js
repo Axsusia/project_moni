@@ -46,6 +46,7 @@ function callCasper( pages ) {
 		(function(child, key, childDataSet){
 			child.stdout.on("data", function (data) {
 				var strData = data.toString();
+				console.log(strData);
 				childDataSet[key].push ( strData );
 			});
 			child.on("close", function(){
@@ -116,15 +117,20 @@ function callCasper( pages ) {
 		console.log('dataOrganization--->>>>>>> 종료');
 	}
 
-	var testLast = new Last( 0, setCount, allDone );
+	var lastAction = new Last( 0, setCount, function(){
+		console.log('모두 종료되쑴!');
+		DB.work({
+			action : 'insert',
+			sqlName : 'insertLogSummary',
+			callback : function ( data ) {
+				console.log('요약 저장 완료;');
+			} 
+		});
+	});
 
 	function processFinish () {
 		console.log('프로세스 종료...');
-		testLast.trigger();
-	}
-
-	function allDone () {
-		console.log('모두 종료!!!!! 다 끝났음.');
+		lastAction.trigger();
 	}
 }
 

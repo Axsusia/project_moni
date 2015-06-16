@@ -46,9 +46,9 @@ function get ( name ) {
 	if ( sqlSet[ name ] ) {
 		console.log( sqlSet[ name ] );
 		return sqlSet[ name ];
-	}
-	else
+	} else {
 		return false;
+	}
 }
 
 exports.sqlSet = sqlSet;

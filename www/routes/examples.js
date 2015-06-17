@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var DB = require('../../common/db/connection.js');
-var Last = require('../../common/utils/Last.js').Last;
+var Last = require('../../common/utils/last.js').Last;
 
 /* GET home page. */
 router.get('/db/select', function(req, res, next) {

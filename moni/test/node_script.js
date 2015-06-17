@@ -1,6 +1,6 @@
 /* DB setting */
 var DB = require('../../common/db/connection.js');
-var Last = require('../../common/utils/Last.js').Last;
+var Last = require('../../common/utils/last.js').Last;
 
 /* casperJs setting */
 var casperProcess = (process.platform === "win32" ? "casperjs.cmd" : "casperjs");

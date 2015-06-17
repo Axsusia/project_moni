@@ -38,6 +38,15 @@ var sqlSet = {
 			group by\
 				log_time, page_no ;\
 		"
+	},
+	
+	testSelect : {
+		creater : '서시원',
+		sql : "\
+			select * \
+			from page_log\
+			where log_time = (select max(log_time) from test_time);\
+		"
 	}
 	
 }

@@ -20,7 +20,8 @@ function loadList ( callCasper ) {
 	});
 }
 
-console.log( 'start.js' );
+//loadList( nodeScript.callCasper );	
+console.log( 'crontab start.js !!!' );
 new CronJob('00 */5 * * * *', function() {
-	loadList( nodeScript.callCasper );	
+	loadList( nodeScript.callCasper );
 }, null, true, 'America/Los_Angeles');
